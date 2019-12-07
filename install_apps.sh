@@ -1,8 +1,11 @@
-#!/bin/bash -o xtrace
-#This bash script is the first thing I run after installing Linux Mint to automatically set up my machine and install everything I use. I've included some links and notes as well. In Nemo, navigate to the directory containing this script, right-click, select "open in terminal", and type "sudo bash install_apps.sh" By Ken Sherman 12 Feb 2019
+#!/bin/bash 
+#This bash script is the first thing I run after installing Linux Mint (https://linuxmint.com/) to automatically set up my machine and install everything I use. I've included some links and notes as well. In Nemo, navigate to the directory containing this script, right-click, select "open in terminal", and type "sudo bash install_apps.sh" 
+#ppa's have been used either when the app is not in the repository, or when I really want the latest version of something
+#Ken Sherman 20 Sept 2019
 #Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation, and/or (take your pick)
 #This file is licensed under the Creative Commons Attribution-Share Alike 3.0 Unported, 2.5 Generic, 2.0 Generic and 1.0 Generic license: https://en.wikipedia.org/wiki/en:Creative_Commons
 
+#Linux Mint 19.2 "Tina" is based on Ubuntu 18.04 Bionic Beaver and runs Cinnamon 4.2 desktop and Linux kernel 4.15
 #Linux Mint 19.1 "Tessa" is based on Ubuntu 18.04 Bionic Beaver and runs Cinnamon 4.0 desktop
 #Linux Mint 18.3 "Sylvia" is based on Ubuntu 16.04.3 Xenial Xerus
 
@@ -24,8 +27,8 @@ export DEBIAN_FRONTEND=noninteractive
 
 #sudo python3 -OEs aptsources-cleanup.zip #to fix W: Target Packages … is configured multiple times”?
 
-#install vlc codecs for DVD playback 
-sudo apt install -y libdvd-pkg #needed to play dvd's with vlc
+#install codecs for DVD playback. Actually, vlc has everything built-in now, but I think some other packages use this
+sudo apt install -y libdvd-pkg 
 sudo dpkg-reconfigure libdvd-pkg
 #HandBrake open-source, GPL-licensed, video transcoder (always reencodes, so not good for DVD's)
 #sudo add-apt-repository -y ppa:stebbins/handbrake-releases
@@ -40,6 +43,7 @@ sudo dpkg-reconfigure libdvd-pkg
 #change mint to install recommended packages automatically (by deleting these files)
 #sudo rm -v /etc/apt/apt.conf.d/00recommends /etc/apt/apt.conf.d/99synaptic
 
+#networking
 sudo apt-get -y install samba --install-recommends
 sudo apt-get -f install
 sudo smbpasswd -a ken            #add samba password for my account. networking wont work without it.
@@ -68,9 +72,9 @@ sudo apt-get install build-essential software-properties-common -y
 sudo apt-get install qtcreator -y
 sudo apt-get install qtdeclarative5-dev -y
 sudo apt install qt5-default -y
-sudo apt install qt5-doc
-sudo apt install qt5-doc-html qtbase5-doc-html
-sudo apt install qtbase5-examples
+sudo apt install -y qt5-doc
+sudo apt install -y qt5-doc-html qtbase5-doc-html
+sudo apt install -y qtbase5-examples
 sudo apt-get update
 sudo apt-get install gcc g++ gcc-multilib -y
 sudo apt-get update
@@ -116,8 +120,7 @@ sudo dpkg -i code_1.28.2-1539735992_amd64.deb
 # https://code.visualstudio.com/docs?start=true
 #valgrind - debugging and profiling. http://cs.ecs.baylor.edu/~donahoo/tools/valgrind/
 sudo apt install valgrind -y
-#gnu octave
-#sudo apt-get install octave
+#gnu octave: mint 19.2 has 4.2.2-1, 5.1.0 is latest
 sudo apt-add-repository -y ppa:octave/stable
 sudo apt-get update
 sudo apt-get install octave -y
@@ -136,21 +139,24 @@ sudo apt-get install liboctave-dev -y
 #snap
 #sudo apt update
 #sudo apt install snapd
-#maxima
+#maxima mint 19.2 has v 18.02, 19.09 is latest
 sudo add-apt-repository -y ppa:blahota/wxmaxima
 sudo apt-get update
 sudo apt-get install wxmaxima -y
+#copy cform.lisp to /home/ken/.maxima (script to output c code)
+cp cform.lisp $HOME/.maxima
+
 #scilab, includes xcos
 #sudo apt install -y scilab-full-bin #I think this simply downloads the pkg. it doesn't seem to install anything
 sudo apt install -y scilab
 #RPN calculator
 sudo apt install -y grpn
-#fsearch - is in the repository now, no need for ppa
-#sudo add-apt-repository -y ppa:christian-boxdoerfer/fsearch-daily
-#sudo apt-add-repository -y 'deb http://ppa.launchpad.net/christian-boxdoerfer/fsearch-daily/ubuntu xenial main'
-#sudo apt-get update
+#fsearch 
+sudo add-apt-repository -y ppa:christian-boxdoerfer/fsearch-daily
+sudo apt-get update
 sudo apt-get install fsearch-trunk -y
 #https://github.com/cboxdoerfer/fsearch/wiki/Build-instructions
+#disable wake on mouse movement: http://www.das-werkstatt.com/forum/werkstatt/viewtopic.php?f=7&t=1985
 
 #Anaconda virtual environment conveniently installs Python, the Jupyter Notebook, spyder and other commonly used packages for scientific computing and data science.
 sudo bash Anaconda3-2019.07-Linux-x86_64.sh -b
@@ -297,9 +303,9 @@ sudo apt install kino -y
 # dvgrab -rewind -fraw -timesys -s 0 -autosplit=10 -guid 0x080046010326fd82 dv-
 #dvgrab -input * -fraw -autosplit=10 -s 0 -t -t dv- #splits the file, but there is no timecode in a dv file, only in a tape
 #cinerella
-sudo add-apt-repository -y ppa:cinelerra-ppa/ppa
-sudo apt-get update
-sudo apt-get install cinelerra-cv -y
+#sudo add-apt-repository -y ppa:cinelerra-ppa/ppa
+#sudo apt-get update
+#sudo apt-get install cinelerra-cv -y
 # https://www.catswhocode.com/blog/19-ffmpeg-commands-for-all-needs
 #xvid is the codec used by the NIX photo frame
 #ffmpeg -i input file -vf yadif -vcodec libxvid -qscale:v 6 output.mp4
@@ -308,8 +314,8 @@ sudo apt-get install cinelerra-cv -y
 #concat multiple .vob files into one:
 #ffmpeg -i 'concat:VTS_01_1.VOB|VTS_01_2.VOB|VTS_01_3.VOB|VTS_01_4.VOB' -acodec copy -vcodec copy combined.mpg
 
-sudo add-apt-repository -y ppa:jonathonf/ffmpeg-3
-sudo apt-get update
+#sudo add-apt-repository -y ppa:jonathonf/ffmpeg-3
+#sudo apt-get update
 sudo apt install ffmpeg -y
 #KDEnlive - video editor
 sudo add-apt-repository -y ppa:sunab/kdenlive-release
@@ -320,15 +326,16 @@ sudo apt install jhead -y
 #jhead -ft *.jpg set Date Modified = Exif time
 #rename all photos in folder to the date-time the image was taken; jhead -autorot -nf%Y-%m-%d-%H%M%S *.jpg
 #linux case sensitive so *.JPG may also be necessary
-#gimp
+#gimp v 2.8 installed in mint 19.2, get latest with ppa
+sudo apt-remove --autoremove -y gimp
 sudo add-apt-repository -y ppa:otto-kesselgulasch/gimp
 sudo apt-get update
 sudo apt-get install gimp -y
-sudo apt-get install gimp-gmic #cool photo effects plugin
+sudo apt-get install -y gimp-gmic #cool photo effects plugin
 #hugin 2019 panorama stitcher (check version in mint 19.3 repository
 sudo add-apt-repository ppa:ubuntuhandbook1/apps
 sudo apt update
-sudo apt install hugin
+sudo apt install -y hugin
 #to remove sudo apt-get remove --autoremove hugin hugin-tools
 
 #"Scanner Access Now Easy" tools. Adds file | create | xscanimage in GIMP. enables network scanning for MF4800
@@ -362,16 +369,6 @@ sudo apt-get install nemo-seahorse -y #encryption
 sudo apt-get install nemo-rabbitvcs -y #SVN and git version control access
 sudo apt-get install nemo-media-columns -y #add columns of exif data
 
-#vmware
-#sudo su -c "apt-get install gcc build-essential"
-chmod +x VMware-Player-15.0.0-10134415.x86_64.bundle
-sudo sh VMware-Player-15.0.0-10134415.x86_64.bundle /s
-#to remove
-#sudo  vmware-installer -u vmware-workstation
-#add monitor.allowLegacyCPU = "true" To /etc/vmware/config to run on legacy processors
-#change System Settings / Preferences / Privacy / Never forget old files' = True or vm's won't show in vmware player GUI
-#If you have sufficient host memory (eg. >=8GB) and your VMs are configured for sufficiently small memory usage (e.g. >=4GB) you can run the VM completely in memory. Add the following line to the bottom of your /etc/vmware/config file:
-#prefvmx.minVmMemPct = "100"
 #K3B DVD burning sw
 sudo apt-get install k3b -y
 sudo apt install brasero -y
@@ -379,7 +376,7 @@ sudo apt-get install gparted -y
 #freecad
 sudo add-apt-repository -y ppa:freecad-maintainers/freecad-stable
 sudo apt-get update
-sudo apt-get install -y freecad-daily freecad-daily-doc 
+sudo apt-get install -y freecad
 #ODA File Converter (for dwg conversion)
 sudo dpkg -i ODAFileConverter_QT5_lnxX64_4.7dll.deb
 #OpenSCAD The Programmers Solid 3D CAD Modeller http://www.openscad.org
@@ -405,27 +402,6 @@ sudo apt-get install krita -y
 #turn trackpad on/off via keyboard: win "mou" select "mouse and trackpad"  Ctrl-Tab twice, Enter, Tab Enter
 #Remove flash
 sudo apt-get purge adobe-flashplugin -y
-#encryption https://www.veracrypt.fr/en/Home.html
-#wget https://launchpad.net/veracrypt/trunk/1.23/+download/veracrypt-1.23-setup.tar.bz2
-#To prevent VeraCrypt from unmounting volumes on sleep\suspend edit the file /etc/default/veracrypt, change line VERACRYPT_SUSPEND_UNMOUNT="yes"
-#To VERACRYPT_SUSPEND_UNMOUNT="no" Changes take effect immediately after saving the file. No need to reboot nor restart any services.
-#sudo apt install cryfs 
-#
-./veracrypt-1.23-setup-gui-x64
-#Encfs https://vgough.github.io/encfs/
-#to use, enter the following command, p for paranoi mode, place files into the Private directory, encrypted copies will then be synced to the other dir which then Dropbox will sync (if this is your Dropbox dir). Do not delete or lose the .encfs.xml file (it’s hidden by default).EncFS won’t automatically mount itself after you restart your system, so just rerun the command. If you want your EncFS file system automatically mounted each time you log in, you can use gnome-encfs. gnome-encfs adds your EncFS password to your GNOME keyring and automatically mounts it each time you log in.
-#https://www.techrepublic.com/blog/five-apps/protect-your-data-with-these-five-linux-encryption-tools/
-#encfs ~/Dropbox/encrypted ~/Private
-sudo apt-get install encfs -y
-#install gnome-encfs-manager:
-sudo add-apt-repository -y ppa:gencfsm/ppa
-sudo apt-get update && sudo apt-get install gnome-encfs-manager -y
-#haven't tried this yet
-#sudo add-apt-repository -y ppa:eugenesan/ppa 
-#sudo apt-get update
-#sudo apt-get install encfs -y
-#rclone - sync to cloud storage. rclone config to configure. see https://rclone.org/docs/
-curl https://rclone.org/install.sh | sudo bash
 
 #Mint tweaks:
 #https://sites.google.com/site/easylinuxtipsproject/mint-cinnamon-first
@@ -515,9 +491,9 @@ sudo apt install -y splat
 sudo apt install -y xnec2c #graphical version of nec2c
 sudo apt install -y nec2c #c translation of nec2 fortran program
 #multiphysical simulation software https://www.csc.fi/web/elmer, $ ElmerGUI to run the GUI
-sudo apt-add-repository -y ppa:elmer-csc-ubuntu/elmer-csc-ppa
-sudo apt update
-sudo apt install -y elmerfem-csc
+#sudo apt-add-repository -y ppa:elmer-csc-ubuntu/elmer-csc-ppa
+#sudo apt update
+#sudo apt install -y elmerfem-csc
 #alternately you can install from the repository (this installs v 6.1.0 on Mint 18.3)
 sudo apt install -y elmer
 
@@ -561,9 +537,45 @@ sudo apt-get install powertop -y
 sudo apt-get install htop -y
 #Master PDF Editor https://code-industry.net/masterpdfeditor/ 
 sudo dpkg -i master-pdf-editor-5.1.68_qt5.amd64.deb
-sudo apt-get install pdfchain -y
 
+#https://github.com/iamadamdev/bypass-paywalls-firefox
+
+#encryption https://www.veracrypt.fr/en/Home.html (requires interaction)
+#wget https://launchpad.net/veracrypt/trunk/1.23/+download/veracrypt-1.23-setup.tar.bz2
+#To prevent VeraCrypt from unmounting volumes on sleep\suspend edit the file /etc/default/veracrypt, change line VERACRYPT_SUSPEND_UNMOUNT="yes"
+#To VERACRYPT_SUSPEND_UNMOUNT="no" Changes take effect immediately after saving the file. No need to reboot nor restart any services.
+#sudo apt install cryfs 
+#
+./veracrypt-1.23-setup-gui-x64
+#Encfs https://vgough.github.io/encfs/
+#to use, enter the following command, p for paranoi mode, place files into the Private directory, encrypted copies will then be synced to the other dir which then Dropbox will sync (if this is your Dropbox dir). Do not delete or lose the .encfs.xml file (it’s hidden by default).EncFS won’t automatically mount itself after you restart your system, so just rerun the command. If you want your EncFS file system automatically mounted each time you log in, you can use gnome-encfs. gnome-encfs adds your EncFS password to your GNOME keyring and automatically mounts it each time you log in.
+#https://www.techrepublic.com/blog/five-apps/protect-your-data-with-these-five-linux-encryption-tools/
+#encfs ~/Dropbox/encrypted ~/Private
+sudo apt-get install encfs -y
+#install gnome-encfs-manager:
+sudo add-apt-repository -y ppa:gencfsm/ppa
+sudo apt-get update && sudo apt-get install gnome-encfs-manager -y
+#haven't tried this yet
+#sudo add-apt-repository -y ppa:eugenesan/ppa 
+#sudo apt-get update
+#sudo apt-get install encfs -y
+#rclone - sync to cloud storage. rclone config to configure. see https://rclone.org/docs/
+curl https://rclone.org/install.sh | sudo bash
 #trash can utility installed by default, eg $gvfs-trash *.txt, gvfs-ls, gvfs-trash --empty
+
+#vmware (requires interaction)
+#sudo su -c "apt-get install gcc build-essential"
+chmod +x VMware-Player-15.0.0-10134415.x86_64.bundle
+sudo sh VMware-Player-15.0.0-10134415.x86_64.bundle /s
+#to remove
+#sudo  vmware-installer -u vmware-workstation
+#add monitor.allowLegacyCPU = "true" To /etc/vmware/config to run on legacy processors
+#change System Settings / Preferences / Privacy / Never forget old files' = True or vm's won't show in vmware player GUI
+#If you have sufficient host memory (eg. >=8GB) and your VMs are configured for sufficiently small memory usage (e.g. >=4GB) you can run the VM completely in memory. Add the following line to the bottom of your /etc/vmware/config file:
+#prefvmx.minVmMemPct = "100"
+
+#STM32CubeIDE: IDE for embedded c++ on STMicroelectronics family of embedded chips
+sudo bash st-stm32cubeide_1.0.2_3566_20190716_0927_amd64.deb_bundle.sh
 
 #mariadb-server is a fork of MySQL server, if you need it.
 #sudo apt-get install mariadb-server
