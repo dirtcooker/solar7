@@ -16,6 +16,8 @@
 #https://itsfoss.com/apt-get-linux-guide/
 #to view the path type $PATH. the PATH variable is set in /etc/environment, add variables here to permanently and globally change the path. Then save, logout, login. for a single session, add a folder to $PATH by using by typing for example: export PATH=~/anaconda3/bin:$PATH
 
+#sudo fdisk -l #lists info about drives. disks gui program lists partition type
+
 #for SSD "sudo gedit /etc/fstab", add the word noatime to the line for your root partition and your other Linux partitions, just before errors=remount-ro. Note: don't add it to the line for the swap partition! Example:
 #UUID=f861106a-5f65-443a-ba39-xxxxxxxx /       ext4    noatime,errors=remount-ro 0       1
 #test with "mount -a", then "sudo tune2fs -l /dev/nvme0n1p2" to check default mount options.
@@ -56,7 +58,7 @@ sudo apt-get install cups -y
 chmod +x linux-UFRII-drv-v360-usen/install.sh
 sudo bash linux-UFRII-drv-v360-usen/install.sh
 sudo apt-get install -f -y
-#http://localhost:631 to configure printer via cups
+#http://localhost:631 to configure printer via cups. enter username (ken), smbpasswd
 #sudo apt-get install cups-pdf -y  #produces inferior bitmap pdf's, so don't install this
 #sudo apt-get install redshift redshift-gtk -y #already included in mint 19
 
@@ -68,9 +70,12 @@ sudo apt-get install cmake-qt-gui -y
 #clone a repot: git clone https://github.com/ggodreau/sxsw2019.git
 sudo apt install -y git
 #QT grab latest (this is a .run file, haven't tried it): https://download.qt.io/archive/qt/5.13/5.13.0/
+#mint 19.2 has qt creator 4.5.2 based on qt 5.9.5 in the repository
 sudo apt-get install build-essential software-properties-common -y
 sudo apt-get install qtcreator -y
+sudo apt-get install qtcreator-doc -y
 sudo apt-get install qtdeclarative5-dev -y
+sudo apt-get install -y qml-module-qtquick-controls2 
 sudo apt install qt5-default -y
 sudo apt install -y qt5-doc
 sudo apt install -y qt5-doc-html qtbase5-doc-html
@@ -79,13 +84,28 @@ sudo apt-get update
 sudo apt-get install gcc g++ gcc-multilib -y
 sudo apt-get update
 #to verify
-#gcc 
+#gcc --version
 #How to Install the GCC C++ Compiler on Linux Mint
 # https://prognotes.net/2016/04/install-gcc-cpp-compiler-linux-mint/
+#The kernel headers and development packages for the currently running kernel can be installed with:
+sudo apt-get install -y linux-headers-$(uname -r)
+#cuda 10.1 Update 2 install: https://developer.nvidia.com/cuda-downloads. Install one of the toolkit packages, eg cuda-toolkit-10-1 instead of the cuda package. Then you can keep your existing, working driver version.
+#uninstall old cuda versions first, if any: $lspci | grep -i nvidia, $nvcc -V, $sudo /usr/local/cuda-10.1/bin/cuda-uninstaller, $sudo apt --purge remove "cublas*" "cuda*", $sudo apt --purge remove "nvidia*", $nvidia-smi
+#you can install from the repository, but what version is it though? mint 18.3 has v7.5.17 in repository
+#sudo apt install nvidia-cuda-toolkit
+#include directories: /usr/local/cuda-10.1/include, /usr/local/cuda-10.1/bin
+#$ printenv to show environment, To change the environment variables for 64-bit operating systems: $ export LD_LIBRARY_PATH=/usr/local/cuda-10.1/lib64, export CUDA_PATH=/usr/local/cuda-10.1
+#$ export PATH=/usr/local/cuda-10.1/samples/common/inc:$PATH
+
 #AVR arduino
 sudo apt install -y avrdude avrdude-doc binutils-avr gcc-avr avr-libc uisp flex byacc bison gdb-avr
 #ls -l /dev/ttyACM* to determine usb port names, then add the group (e.g. "dialout") to your user account. also lsusb
 sudo usermod -a -G dialout ken
+#arduino IDE
+cp -r arduino-1.8.9 ~
+cd ~/arduino-1.8.9
+sudo ./install.sh
+cd -
 #To see  which  tty's  are  currently in use, you can simply look into the file /proc/tty/drivers
 #FTDI usb device is likely to be /dev/ttyUSB0 see https://www.silabs.com/community/interface/knowledge-base.entry.html/2016/06/06/fixed_tty_deviceass-XzTf
 #to compile and link a c program led.c for an arduino uno, or a bare 328p chip, use the following script:
@@ -100,6 +120,9 @@ sudo usermod -a -G dialout ken
 #avrdude -v -patmega328p -cavrisp -P /dev/ttyACM0 -b 19200 -e -Ulock:w:0x3F:m -Uefuse:w:0xFD:m -Uhfuse:w:0xDE:m -Ulfuse:w:0xFF:m 
 #install arduino IDE, extract arduino-1.8.9-linux64.tar.xz to home directory, then ./install.sh
 
+#xclip: pipe shell output to your clipboard. For the mouse clipboard, pipe straight to xclip: echo 123 | xclip, For the system clip board, pipe to xclip and select clip directly: echo 123 | xclip -sel clip
+sudo apt -y install xclip
+
 #codeblocks http://www.codeblocks.org/
 #sudo apt-get install -y build-essential codeblocks codeblocks-contrib
 #can also try
@@ -113,7 +136,7 @@ sudo usermod -a -G dialout ken
 sudo dpkg -i codeblocks/*17.12*.deb
 sudo apt-get install -f -y
 #visual studio code
-sudo dpkg -i code_1.28.2-1539735992_amd64.deb
+sudo dpkg -i code_1.38.1-1568209190_amd64.deb
 #ctrl-p ext install ms-python.python From File > Preferences > Settings set telemetry.enableTelemetry=F
 # ext install ms-vscode.cpptools
 # https://thisdavej.com/build-an-amazing-html-editor-using-visual-studio-code/
@@ -143,7 +166,12 @@ sudo apt-get install liboctave-dev -y
 sudo add-apt-repository -y ppa:blahota/wxmaxima
 sudo apt-get update
 sudo apt-get install wxmaxima -y
+#maxima extra code, documentation, test suite
+sudo apt-get install maxima-share -y
+sudo apt-get install maxima-doc -y
+sudo apt-get install maxima-test -y
 #copy cform.lisp to /home/ken/.maxima (script to output c code)
+mkdir $HOME/.maxima
 cp cform.lisp $HOME/.maxima
 
 #scilab, includes xcos
@@ -151,6 +179,8 @@ cp cform.lisp $HOME/.maxima
 sudo apt install -y scilab
 #RPN calculator
 sudo apt install -y grpn
+#free42 calculator
+sudo cp Free42Linux/* /usr/local/bin
 #fsearch 
 sudo add-apt-repository -y ppa:christian-boxdoerfer/fsearch-daily
 sudo apt-get update
@@ -158,23 +188,23 @@ sudo apt-get install fsearch-trunk -y
 #https://github.com/cboxdoerfer/fsearch/wiki/Build-instructions
 #disable wake on mouse movement: http://www.das-werkstatt.com/forum/werkstatt/viewtopic.php?f=7&t=1985
 
-#Anaconda virtual environment conveniently installs Python, the Jupyter Notebook, spyder and other commonly used packages for scientific computing and data science.
-sudo bash Anaconda3-2019.07-Linux-x86_64.sh -b
+#Anaconda virtual environment conveniently installs Python, the Jupyter Notebook, Spyder and other commonly used packages for scientific computing and data science.
+sudo bash Anaconda3-5.3.0-Linux-x86_64.sh -b
 #conda info, may need to add path to anaconda: export PATH=~/anaconda3/bin:$PATH
 #To remove the entire Anaconda installation directory just delete it: rm -rf ~/anaconda3, rm -rf ~/.conda
 #create a virtual environment: conda create -n myenv python=3.6, activate: source activate myenv, source deactivate myenv, jupyter notebook, pip install --ignore-installed --upgrade , pip install keras
 #https://www.tensorflow.org/install/pip
 #To check it using Jupyter Notebook (IPython Notebook: In [1]: import tensorflow as tf, In [2]: tf.__version__
+#anaconda-navigator to launch various applications
+#conda update spyder, conda install pyopengl, etc, go to https://anaconda.org to search for installable packages
+#pip install --user dxfwrite (installed dxfwrite from pypi.org, had to restart Spyder)
 
 #https://medium.com/@mengjiunchiou/how-to-set-keras-with-tensorflow-with-conda-virtual-environment-on-ubuntu-5d56d22e3dc7
 #https://docs.python.org/3.7/tutorial/
 #alternately you can install python and jupyter directly
 #python package installer see https://pip.pypa.io/en/stable/
-#sudo apt install -y python3-dev python3-pip
-#sudo pip3 install -U virtualenv
-#sudo pip3 install -y jupyter
 #python3 --version
-#pip3 --version
+#pip --version
 #virtualenv --version
 #https://www.tensorflow.org/install/  https://www.tensorflow.org/tutorials
 #pip3 install tensorflow #cpu only
@@ -226,7 +256,7 @@ sudo apt-get install guitarix -y #guitar preamp
 #sudo add-apt-repository -y ppa:mscore-ubuntu/mscore-stable
 #sudo apt-get update
 sudo apt-get install musescore -y
-sudo dpkg -i bitwig-studio-2.4.3.deb
+sudo dpkg -i bitwig-studio-3.0.3.deb
 sudo apt-get install -f -y
 sudo apt-get install playitslowly -y
 #sudo apt install aeolus
@@ -241,7 +271,10 @@ sudo apt install -y dgedit #drum kit editor for drumgizmo
 #IF any of the plugins crash and makes bitwig hang, open up a terminal and do a "ps -A |grep bitwig" find the pid's and kill it. Bitwig usually has some crash saves that will save you.
 #https://answers.bitwig.com/questions/14096/how-to-use-windows-vst-plug-ins-in-bitwig22-linux
 #https://theproducersplug.com/product/edirol-orchestral-vst-free-download/
-
+#tlp power management tool for linux: https://www.tecmint.com/tlp-increase-and-optimize-linux-battery-life/
+#configuration file is /etc/default/tlp. commands: $sudo tlp-stat -t $sudo tlp-stat -c
+#$cat /sys/bus/cpu/devices/cpu*/cpufreq/scaling_governor
+sudo apt install tlp -y
 #hardware info command
 apt install hwinfo -y
 apt install pydf -y
@@ -327,13 +360,13 @@ sudo apt install jhead -y
 #rename all photos in folder to the date-time the image was taken; jhead -autorot -nf%Y-%m-%d-%H%M%S *.jpg
 #linux case sensitive so *.JPG may also be necessary
 #gimp v 2.8 installed in mint 19.2, get latest with ppa
-sudo apt-remove --autoremove -y gimp
+sudo apt-get remove --autoremove -y gimp
 sudo add-apt-repository -y ppa:otto-kesselgulasch/gimp
 sudo apt-get update
 sudo apt-get install gimp -y
 sudo apt-get install -y gimp-gmic #cool photo effects plugin
 #hugin 2019 panorama stitcher (check version in mint 19.3 repository
-sudo add-apt-repository ppa:ubuntuhandbook1/apps
+sudo add-apt-repository -y ppa:ubuntuhandbook1/apps
 sudo apt update
 sudo apt install -y hugin
 #to remove sudo apt-get remove --autoremove hugin hugin-tools
@@ -367,7 +400,9 @@ sudo apt-get install nemo-image-converter -y
 sudo apt-get install nemo-gtkhash -y #compute sha-256
 sudo apt-get install nemo-seahorse -y #encryption
 sudo apt-get install nemo-rabbitvcs -y #SVN and git version control access
-sudo apt-get install nemo-media-columns -y #add columns of exif data
+#sudo apt-get install nemo-media-columns -y #add columns of exif data. 2019-12 bug in this extension causes nemo to hang with certain files
+sudo apt install dconf-editor -y #sort of a cinnamon version of regedit - customize desktop
+sudo apt install -y pcmanfm #lightweight file manager
 
 #K3B DVD burning sw
 sudo apt-get install k3b -y
@@ -394,6 +429,8 @@ sudo apt-get install karbon -y
 sudo add-apt-repository -y ppa:kritalime/ppa
 sudo apt-get update
 sudo apt-get install krita -y
+sudo apt install nomacs -y #fast svg & image viewer
+
 #Luminance HDR is used for creating High Dynamic Range (HDR) images. http://www.anyhere.com/gward/hdrenc/hdr_encodings.html
 #sudo add-apt-repository -y ppa:dhor/myway
 #sudo apt-get update
@@ -409,6 +446,8 @@ sudo apt-get purge adobe-flashplugin -y
 sudo add-apt-repository -y ppa:giuspen/ppa
 sudo apt-get update
 sudo apt-get install cherrytree -y
+sudo mkdir -v ~/.config/cherrytree
+sudo cp -v cherrytree/config.cfg ~/.config/cherrytree
 #Mint already includes libre office, to install a later version from .deb file, remove old version first
 #sudo apt-get -y remove --purge libreoffice-core && sudo apt-get -y autoremove
 #reboot to get rid of all remnants of the old version. Download and unpack the .deb file
@@ -441,6 +480,7 @@ sudo apt-get -y install unison-gtk ssh winbind sshfs
 # -a Do the sync preserving all filesystem attributes
 #-v run verbosely
 #-u skip files that are newer on the receiver
+#-n dry run, don't actually do anything (-v option let's you see what will happen)
 #--delete delete the files in target folder that do not exist in the source, /home/user/A: source folder, /home/user/B: target folder 
 #screenshots
 sudo apt-get install shutter -y
@@ -479,6 +519,7 @@ sudo apt-get install libgoo-canvas-perl -y
 #to install from the repository just do this:
 #mint 19.1 installs wine 3. From playonlinux you can install v 3.2 & other versions and manage wine bottles
 sudo dpkg --add-architecture i386
+#sudo apt install -y --install-recommends wine-installer
 sudo apt install -y wine64 
 sudo apt install -y playonlinux
 sudo apt install winetricks -y
@@ -522,11 +563,16 @@ sudo apt-get install kicad -y
 sudo apt -y install --install-recommends kicad kicad-demo kicad-doc-en
 
 #sigrok open source signal analysis for logic analyzers, MSOs, oscilloscopes, multimeters, LCR meters, etc
-#sudo apt install pulseview -y #(v .4.0, latest is 0.4.1). compile from source for latest version.
+#sudo apt install pulseview -y #version in repository is old. Nov 2019 git version 0.5.0). compile from source for latest version.
 #sigrok-cli -d brymen-bm257 --show
 #sigrok-meter dependencies;
 #sudo apt-get install pyqt4-dev-tools
-sudo bash pulseview.sh
+chmod +x pulseview.sh #need to set execute flag for following to work
+sudo ./pulseview.sh 
+#add ken to the plugdev group. cat /etc/group to list groups on your machine. pulseview.sh includes a udev rule file for those in the group plugdev
+#sudo groupadd plugdev #I think this already done by pulseview.sh
+sudo usermod -a -G plugdev ken
+
 
 #disable touchpad when mouse enabled
 sudo add-apt-repository --yes ppa:atareao/atareao
@@ -537,6 +583,8 @@ sudo apt-get install powertop -y
 sudo apt-get install htop -y
 #Master PDF Editor https://code-industry.net/masterpdfeditor/ 
 sudo dpkg -i master-pdf-editor-5.1.68_qt5.amd64.deb
+sudo apt install -y gscan2pdf #open source GUI scanning software
+
 
 #https://github.com/iamadamdev/bypass-paywalls-firefox
 
@@ -546,7 +594,7 @@ sudo dpkg -i master-pdf-editor-5.1.68_qt5.amd64.deb
 #To VERACRYPT_SUSPEND_UNMOUNT="no" Changes take effect immediately after saving the file. No need to reboot nor restart any services.
 #sudo apt install cryfs 
 #
-./veracrypt-1.23-setup-gui-x64
+sudo ./veracrypt-1.23-setup-gui-x64
 #Encfs https://vgough.github.io/encfs/
 #to use, enter the following command, p for paranoi mode, place files into the Private directory, encrypted copies will then be synced to the other dir which then Dropbox will sync (if this is your Dropbox dir). Do not delete or lose the .encfs.xml file (it’s hidden by default).EncFS won’t automatically mount itself after you restart your system, so just rerun the command. If you want your EncFS file system automatically mounted each time you log in, you can use gnome-encfs. gnome-encfs adds your EncFS password to your GNOME keyring and automatically mounts it each time you log in.
 #https://www.techrepublic.com/blog/five-apps/protect-your-data-with-these-five-linux-encryption-tools/
@@ -566,7 +614,7 @@ curl https://rclone.org/install.sh | sudo bash
 #vmware (requires interaction)
 #sudo su -c "apt-get install gcc build-essential"
 chmod +x VMware-Player-15.0.0-10134415.x86_64.bundle
-sudo sh VMware-Player-15.0.0-10134415.x86_64.bundle /s
+sudo bash ./VMware-Player-15.0.0-10134415.x86_64.bundle /s
 #to remove
 #sudo  vmware-installer -u vmware-workstation
 #add monitor.allowLegacyCPU = "true" To /etc/vmware/config to run on legacy processors
@@ -575,7 +623,7 @@ sudo sh VMware-Player-15.0.0-10134415.x86_64.bundle /s
 #prefvmx.minVmMemPct = "100"
 
 #STM32CubeIDE: IDE for embedded c++ on STMicroelectronics family of embedded chips
-sudo bash st-stm32cubeide_1.0.2_3566_20190716_0927_amd64.deb_bundle.sh
+sudo bash ./st-stm32cubeide_1.0.2_3566_20190716_0927_amd64.deb_bundle.sh
 
 #mariadb-server is a fork of MySQL server, if you need it.
 #sudo apt-get install mariadb-server
@@ -629,6 +677,7 @@ sudo bash st-stm32cubeide_1.0.2_3566_20190716_0927_amd64.deb_bundle.sh
 #killall nemo to restart
 #Fn Alt F2, r to restart cinnamon, lg - start the Melange debugger, xkill - kill an app by pointing at its window gnome-terminal - open a terminal window with bash in it
 #Ctrl+Alt+backspace to restart X windows. http://www.brunolinux.com/01-First_Things_To_Know/Skinny_Elephants.html
+#Reboot: Raising Elephants Is So Utterly Boring: Ctrl+Alt+PrtScr releasing all but Alt, pressing R E I S U B
 #pkill -HUP -f "cinnamon --replace"
 #killall -HUP cinnamon
 #If Cinnamon keeps crashing: I just had the problem appear when I did an 'update' of Mint 16.
@@ -677,3 +726,5 @@ sudo bash st-stm32cubeide_1.0.2_3566_20190716_0927_amd64.deb_bundle.sh
 #ls -la /dev/ttyACM0   Check the current permissions and owner/group of the device
 #sudo usermod -a -G dialout ken   add the group dialout to ken user. logout, then login
 #inxi -Fxz      list system characteristics
+
+#In Linux, UNIX and related operating systems, . denotes the current directory. If you want to run a file in your current directory and that directory is not in your $PATH, you need the ./ bit to tell the shell where the executable is. So, ./foo means run the executable called foo that is in this directory.
