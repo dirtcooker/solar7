@@ -1,0 +1,412 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 19.11.0 ] */
+/* [wxMaxima: input   start ] */
+/*People enter a line for an escalator at a rate modeled by the function for 0<t<300 and 0 for t>300. 
+people exit the line at 0.7 per second. at t=0 there are 20 in line. These problem are from the 2018 AP Calculus BC
+exam https://apcentral.collegeboard.org/pdf/ap18-frq-calculus-bc.pdf */;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+eq1:44*(t/100)^3*(1-t/300)^7;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+wxplot2d([eq1,.7],[t,0,300]);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+integrate(eq1,t,0,300);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+b) 
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+270+20-.7*300;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+solve(80-.7*t,t);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+float(%);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+so at t=300+114=414 s, the line is empty
+d) minimize the function entering-exiting+20. we already have the derivative so just find zeroes of eq1-.7=0
+Maxima finds the roots but I think you're supposed to graph the rate function, then visually approximate the zeroes from that.
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: comment start ]
+ t= 32s where slope=0. 3.8 people (about 4) in line at that time. 
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+wxplot2d(eq1-.7,[t,0,300]);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+solve(eq1-.7,t);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+realroots(eq1-.7,90);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+integrate(eq1-.7,t,0,t);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+n_inline:%+20;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+wxplot2d(n_inline,[t,0,300]);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+ev(n_inline,t=32,float);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+here's a way to do it with the numerical integration function of your calculator:
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+integrate(eq1-.7,t,0,32);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+float(%);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+%+20;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+2. Researchers on a boat are investigating plankton cells in a sea.  At a depth of h meters, the density of plankton cells, in millions of cells per cubic meter, is modeled by ph for 0 < h < 30 and is modeled by f(h) for h≥ 30.  The continuous function f is not explicitly given.
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+ph:0.2*h^2*%e^(-0.0025*h^2);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+dph:diff(ph,h);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+ph is 1e6 cells/m^3, so diff(ph,h) is millions of cells per cubic meter per meter of depth
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+ev(dph,h=25);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+at h=25, the density of cells is increasing at -1.17 million cells/m^3 per meter of depth (e.g. it is decreasing)
+b) in a 3 m^2 column, there are ph*3 million cells/m of height. integrate to find total number of cells from 0 to 30
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+wxplot2d(ph*3,[h,0,30]);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+integrate(ph*3,h,0,30);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+float(%);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+c. integrate(ph*3,h,0,30) + integrate(f*3,h,30,k); since f < u and integrate(u,h,30,inf)=105, the total number of cells is less than 1675+3*105=1990 million which is < 2000 million
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+depends(f,h);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+'integrate(ph*3,h,0,30) + 'integrate(f(h)*3,h,30,k);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+The boat is moving on the surface of the sea.  At time t≥0, the position of the boat is [x(t),y(t)]  where   'diff([x,y],t)=[662*sin(5*t),880*cos(6*t)]  Time t is measured in hours, and [x(t),y(t)] are measured in meters. Find the total distance traveled by the boat over the time interval 0 to 1. 
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+dp:[662*sin(5*t),880*cos(6*t)];
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+to graph the function, (which you don't need to do)
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+assume(t>0);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+p:integrate(dp,t,0,t);
+/* [wxMaxima: input   end   ] */
+/* [wxMaxima: question  start ] */
+<mth><st>Is </st><v>t</v><st> positive, negative or zero?</st></mth>
+/* [wxMaxima: question  end   ] */
+/* [wxMaxima: answer  start ] */
+p;
+/* [wxMaxima: answer  end   ] */
+
+
+/* [wxMaxima: input   start ] */
+wxplot2d([parametric,p[1],p[2]],[t,0,1]);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+distance= ∫ ds = integrate(sqrt((dx/dt)^2+(dy/dt)^2),t)
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+integrate(sqrt(dp.dp),t,0,1);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+quad_qags(sqrt(dp.dp),t,0,1);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+the above is an elliptic integral, for which maxima has special facilities, but it is quick and easy to do numerically as above. 
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: comment start ]
+5. find the area defined by the intersection of the two regions r=4 and r=3+2*cos(t). the curves intersect at
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+r2:3+2*cos(t);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+solve(r2-4,t);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+ and also -%pi/3=5*%pi/3. compute the surface integral ∫∫r*dr*dθ
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+'integrate('integrate(r,r,3+2*cos(t),4),t,%pi/3,5*%pi/3);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+integrate(integrate(r,r,3+2*cos(t),4),t,%pi/3,5*%pi/3);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+float(%);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+wxplot2d([[parametric,r2*cos(t),r2*sin(t),[t,0,2*%pi]],[parametric,4*cos(t),4*sin(t),[t,0,2*%pi]]]);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+slope of tangent line is dy/dx = dy/dt/(dx/dt). the curve is given in polar coord. rewrite in rectangular:
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+px:r2*[cos(t),sin(t)];
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+dpx:diff(px,t);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+slope:dpx[2]/dpx[1];
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+ev(%,t=%pi/2);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+A particle moves along the portion of the curve r = 3+2*cos(θ) for 0<θ<%pi/2.  The particle moves in such a way that the distance between the particle and the origin increases at a constant rate of  3  units per second.  Find the rate at which the angle θ changes with respect to time at the instant when the position of the particle corresponds to θ = %pi/3.  Indicate units of measure.
+dr/dt=dr/dθ dθ/dt =3 compute derivative, solve for dθ/dt, then plug in %pi/3. The result is in radians per second.
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+depends(θ,t);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+diff(3+2*cos(θ),t);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+solve(%-3,'diff(θ,t));
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+rhs(%[1]);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+ev(%,θ=%pi/3);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+taylor(log(1+x),x,0,5);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+so plug in x=y/3, dy=3*dx, multiply by x
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+ev(3*x*%,x=y/3);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+expand(%);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+now the easy way:
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+taylor(x*log(1+x/3),x,0,5);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+depends(f,x);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+taylor(f(x),x,0,5);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+using green's theorem in the plane, it is possible to determine the area of reqion R by a line integral (although in this case is a more difficult method). Be careful to traverse the contour in the positive direction (counterclockwise). compute the line integral ∫x*dy
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+diff(r2*sin(t),t);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+%*r2*cos(t);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+integrate(%,t,%pi*5/3,%pi/3);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+float(%);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+integrate((4*cos(t))^2,t,%pi/3,%pi*5/3);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+float(%);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+%-4.85181264685194;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+the result is the same as before using the surface integral in cylindrical coord.
+   [wxMaxima: comment end   ] */
+
+
+
+/* Old versions of Maxima abort on loading files that end in a comment. */
+"Created with wxMaxima 19.11.0"$
