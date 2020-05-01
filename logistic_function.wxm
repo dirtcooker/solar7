@@ -1,0 +1,261 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 19.11.0 ] */
+/* [wxMaxima: comment start ]
+Logistic (French logistique, meaning logarithmic) function is a model of population growth, exponential with rate r for small values of t, then slows to linear growth, then at maturity tops out at at maximum poplutaion of k. This models the growth of biological systems that have limited food or other resource. 
+Invented by mathematician Pierre-François Verhulst (1804–1849) after reading Thomas Malthus' An Essay on the Principle of Population. see https://en.wikipedia.org/wiki/Logistic_function
+The logistic equation is a special case of the Bernoulli differential equation y''+P(x)*y=Q(x)*y^n. the substitution u = y^(1 − n) reduces any Bernoulli equation to a linear differential equation.
+The logistic map is a discretized version https://en.wikipedia.org/wiki/Logistic_map
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+de1:'diff(p,t)-r*p*(1-p/k)=0;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+s1:ode2(de1,p,t);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+ic1(s1,t=0,p=k/2);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+solve(s1,p);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+maxima provides an implicit solution in terms of log, no doubt exact. However, we want the exponential solution, so rearrange with all terms containing p on the left side and then take inverse log
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+s2:p/(p-k)-%e^(r*(t+%c));
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+ic1(s2,t=t_0,p=k/2);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+s3:solve(%,p);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+multiply top and bottom by %e^(-r*t)
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+s4:num(rhs(s3[1]))*%e^(-r*t)/multthru(denom(rhs(s3[1]))*%e^(-r*t));
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+wxplot2d(ev(s4,[k=2,r=.1,t_0=1]),[t,-40,40],grid2d);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+lfunction(k,r,t_0):=k/(%e^(r*t_0-r*t)+1);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+with_slider_draw(r,makelist(i,i,0,5,.1),yrange=[0,2], explicit(lfunction(2,r,0),t,-4,4),label([string(r),-2,1.75]),grid=[2,2]);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+diff(s4,t);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+test this solution in the original differential equation
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+ev(de1,p=s4,diff);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+ratsimp(%);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+discrete version x(n+1)=(r+1)*x(n)(1-x(n)). note: r is same rate as continuous version.
+Here is one way using a hashed array function. This will stack-overflow for n>50 or so
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+x[0]:.1; x[n]:=r*x[n-1]*(1-x[n-1]);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+x[2];
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+factor(%);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+ev(rectform(%),numer);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+ev(x[2],[r=1.2],numer);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+arrayinfo(x);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+With r between 0 and 1, the population will eventually die, independent of the initial population.
+With r between 1 and 2, the population will quickly approach the value r − 1/r, independent of the initial population.
+With r between 2 and 3, the population will also eventually approach the same value r − 1/r, but first will fluctuate around that value for some time. The rate of convergence is linear, except for r = 3, when it is dramatically slow, less than linear (see Bifurcation memory).
+With r between 3 and 1 + √6 ≈ 3.44949, from almost all initial conditions the population will approach permanent oscillations between two values. These two values are dependent on r.
+With r between 3.44949 and 3.54409 (approximately), from almost all initial conditions the population will approach permanent oscillations among four values.
+See https://en.wikipedia.org/wiki/Logistic_map
+solve for values of r that makes the population oscillate between two values. This means that xn2=xn. Substituting xn1 into the recurrence expression yields xn2. set it equal to xn yields 2 equations in 2 unknowns. solve for them.
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+p1:xn1=r*xn*(1-xn);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+p2:xn=r*xn1*(1-xn1);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+rr:solve([p1,p2],[xn,xn1]);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+ev(rr,[r=3.4]);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+generate a list of xn with a loop. 
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+y:.1; a:[y]; for i:0 thru 126 do (ev(y:r*y*(1-y),[r=3.1]), a:append(a,[y]));
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+wxplot2d([discrete,a],[style,lines],grid2d);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+load(fft);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+b:cabs(fft(a))$
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+wxplot2d([discrete,b],[style,lines]);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+simple exponential growth, discrete and continuous:
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+de1:'diff(x,t)=r_0*x;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+s1:ode2(de1,x,t);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+ic1(s1,t=0,x=1);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+soln1:rhs(%);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+In the continuous case dx/dt = r*x. In the discrete case, the rate of change between two points is, x[n+1]-x[n]=r*x[n], thus x[n+1] = x[n]*(r+1). The rate is r, same in both cases.
+note: I have to start the discrete version at point number 1 (instead of 0) so it lines up with continuous case. Maxima lists start at index 1. This is annoying, but It's a really old program, written in Roman times before 0 was invented ;)
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+y:4967; b:[y]; for i:0 thru 21 do (ev(y:(r+1)*y,[r=.3072]), b:append(b,[y]));
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+b;
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+growth of wuhan virus in usa, day 0 is 15 march 2020.
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+wxplot2d([ev(soln1*3800,[r_0=.3072]),[discrete,b]],[t,0,21],[style,lines,points],[point_type,asterisk],grid2d);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+for higher growth rates, the discrete version cannot keep up.
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+taylor(soln1,t,0,5);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+
+   [wxMaxima: comment end   ] */
+
+
+
+/* Old versions of Maxima abort on loading files that end in a comment. */
+"Created with wxMaxima 19.11.0"$
