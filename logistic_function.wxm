@@ -226,11 +226,6 @@ y:4967; b:[y]; for i:0 thru 21 do (ev(y:(r+1)*y,[r=.3072]), b:append(b,[y]));
 /* [wxMaxima: input   end   ] */
 
 
-/* [wxMaxima: input   start ] */
-b;
-/* [wxMaxima: input   end   ] */
-
-
 /* [wxMaxima: comment start ]
 growth of wuhan virus in usa, day 0 is 15 march 2020.
    [wxMaxima: comment end   ] */
