@@ -1,0 +1,29 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 19.11.0 ] */
+/* [wxMaxima: input   start ] */
+r:((x)**2+y**2)^(1/2);
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: comment start ]
+Plot interference of a plane wave in direction θ (to z axis) and dominant mode of a thin, parallel plate radial waveguide. This mode is TEM to the radial direction, has Ez and Hφ components, and corresponds to the TM00 (TM to z axis) solution of the helmholz equation in cylindrical coordinate. The source is placed at the origin. Change θ (radians) to tilt the plane wave. Radial direction is perpendicular to the z axis. Change wxplot3d to plot3d for an interactive, rotatable plot. Note: there is a singularity at the origin to watch out for, if you change the range of x.
+The travelling wave Ez=h2(0,k*r) is the reference wave, the plane wave incident to the aperture is the object wave, and the hologram is the interference pattern. 
+  
+
+see Harrington "time harmonic electromagnetic fields section 5-2"
+   [wxMaxima: comment end   ] */
+
+
+/* [wxMaxima: input   start ] */
+psi:hankel_2(0,2*%pi/λ*r)+%e^(-%i*2*%pi/λ*x*sin(θ));
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+wxplot3d(ev(cabs(psi),λ:4,θ:0.2),[x,1,20],[y,-5,5],[grid,31,31]);
+/* [wxMaxima: input   end   ] */
+
+
+
+/* Old versions of Maxima abort on loading files that end in a comment. */
+"Created with wxMaxima 19.11.0"$
